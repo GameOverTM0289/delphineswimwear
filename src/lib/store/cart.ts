@@ -1,29 +1,19 @@
-'use client'
-
-import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
-
-export interface CartItem {
-  id: string
-  productId: number
-  name: string
-  price: number
-  image: string
-  color: string
-  size: string
-  quantity: number
-}
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { CartItemData } from '../types';
 
 interface CartState {
-  items: CartItem[]
-  isOpen: boolean
-  addItem: (item: Omit<CartItem, 'quantity'> & { quantity?: number }) => void
-  removeItem: (itemId: string) => void
-  updateQuantity: (itemId: string, quantity: number) => void
-  clearCart: () => void
-  toggleCart: () => void
-  openCart: () => void
-  closeCart: () => void
+  items: CartItemData[];
+  isOpen: boolean;
+  addItem: (item: Omit<CartItemData, 'quantity'>) => void;
+  removeItem: (productId: string, colorId: string, sizeId: string) => void;
+  updateQuantity: (productId: string, colorId: string, sizeId: string, quantity: number) => void;
+  clearCart: () => void;
+  toggleCart: () => void;
+  openCart: () => void;
+  closeCart: () => void;
+  getItemCount: () => number;
+  getSubtotal: () => number;
 }
 
 export const useCartStore = create<CartState>()(
@@ -33,82 +23,70 @@ export const useCartStore = create<CartState>()(
       isOpen: false,
 
       addItem: (item) => {
-        const existingItem = get().items.find((i) => i.id === item.id)
+        set((state) => {
+          const existingIndex = state.items.findIndex(
+            (i) =>
+              i.productId === item.productId &&
+              i.colorId === item.colorId &&
+              i.sizeId === item.sizeId
+          );
 
-        if (existingItem) {
-          set((state) => ({
-            items: state.items.map((i) =>
-              i.id === item.id
-                ? { ...i, quantity: i.quantity + (item.quantity || 1) }
-                : i
-            ),
-          }))
-        } else {
-          set((state) => ({
-            items: [...state.items, { ...item, quantity: item.quantity || 1 }],
-          }))
-        }
-        
-        set({ isOpen: true })
+          if (existingIndex > -1) {
+            const newItems = [...state.items];
+            newItems[existingIndex].quantity += 1;
+            return { items: newItems, isOpen: true };
+          }
+
+          return {
+            items: [...state.items, { ...item, quantity: 1 }],
+            isOpen: true,
+          };
+        });
       },
 
-      removeItem: (itemId) => {
+      removeItem: (productId, colorId, sizeId) => {
         set((state) => ({
-          items: state.items.filter((item) => item.id !== itemId),
-        }))
-      },
-
-      updateQuantity: (itemId, quantity) => {
-        if (quantity < 1) {
-          get().removeItem(itemId)
-          return
-        }
-
-        set((state) => ({
-          items: state.items.map((item) =>
-            item.id === itemId ? { ...item, quantity } : item
+          items: state.items.filter(
+            (i) =>
+              !(i.productId === productId && i.colorId === colorId && i.sizeId === sizeId)
           ),
-        }))
+        }));
       },
 
-      clearCart: () => {
-        set({ items: [] })
+      updateQuantity: (productId, colorId, sizeId, quantity) => {
+        if (quantity < 1) {
+          get().removeItem(productId, colorId, sizeId);
+          return;
+        }
+
+        set((state) => ({
+          items: state.items.map((i) =>
+            i.productId === productId && i.colorId === colorId && i.sizeId === sizeId
+              ? { ...i, quantity }
+              : i
+          ),
+        }));
       },
 
-      toggleCart: () => {
-        set((state) => ({ isOpen: !state.isOpen }))
+      clearCart: () => set({ items: [] }),
+      toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+      openCart: () => set({ isOpen: true }),
+      closeCart: () => set({ isOpen: false }),
+
+      getItemCount: () => {
+        return get().items.reduce((total, item) => total + item.quantity, 0);
       },
 
-      openCart: () => {
-        set({ isOpen: true })
-      },
-
-      closeCart: () => {
-        set({ isOpen: false })
+      getSubtotal: () => {
+        return get().items.reduce(
+          (total, item) => total + item.price * item.quantity,
+          0
+        );
       },
     }),
     {
       name: 'delphine-cart',
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ items: state.items }),
+      skipHydration: true,
     }
   )
-)
-
-export const FREE_SHIPPING_THRESHOLD = 100
-export const STANDARD_SHIPPING_COST = 8.99
-export const TAX_RATE = 0.20
-
-export const calculateShipping = (subtotal: number): number => {
-  return subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_COST
-}
-
-export const calculateTax = (subtotal: number): number => {
-  return subtotal * TAX_RATE
-}
-
-export const calculateTotal = (subtotal: number): number => {
-  const shipping = calculateShipping(subtotal)
-  const tax = calculateTax(subtotal)
-  return subtotal + shipping + tax
-}
+);

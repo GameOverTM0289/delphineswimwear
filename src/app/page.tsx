@@ -1,19 +1,11 @@
-import Hero from '@/components/home/Hero'
-import Introduction from '@/components/home/Introduction'
-import FeaturedProducts from '@/components/home/FeaturedProducts'
-import FeaturedCollections from '@/components/home/FeaturedCollections'
-import CoreValues from '@/components/home/CoreValues'
-import InstagramFeed from '@/components/home/InstagramFeed'
+import Hero from '@/components/home/Hero';
+import FeaturedProducts from '@/components/home/FeaturedProducts';
 
-export default function HomePage() {
+export default function Home() {
   return (
     <>
       <Hero />
-      <Introduction />
       <FeaturedProducts />
-      <FeaturedCollections />
-      <CoreValues />
-      <InstagramFeed />
     </>
-  )
+  );
 }
