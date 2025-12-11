@@ -1,252 +1,192 @@
-# 🌊 Delphine Swimwear - Full E-Commerce Platform
+# Delphine Swimwear
 
-A complete Next.js 14 e-commerce platform with PostgreSQL database, authentication, admin dashboard, and beautiful Mediterranean-inspired design.
+> **RHYTHM OF A FREE SPIRIT**
 
-## ✨ Features
+A luxury e-commerce website for Delphine, a Mediterranean-inspired swimwear brand.
 
-- **🛒 Full E-commerce**: Products, cart, checkout
-- **👤 User Authentication**: Register, login, account management
-- **👑 Admin Dashboard**: Manage products, orders, customers, hero slides, settings
-- **🎨 Beautiful Design**: Stunning hero slider, animations, responsive
-- **🗄️ PostgreSQL Database**: Full Prisma ORM integration
-- **📱 Mobile First**: Fully responsive design
+## Tech Stack
 
-## 🚀 Quick Start (5 Minutes)
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **State Management:** Zustand
+- **Database:** Prisma + PostgreSQL (to be configured)
+- **Payment:** Paysera (Albanian bank compatible)
 
-### Step 1: Get a Free PostgreSQL Database
+## Brand Colors
 
-Go to **[neon.tech](https://neon.tech)** (free tier):
-1. Sign up → Create Project
-2. Copy your connection string (looks like: `postgresql://user:pass@host/db?sslmode=require`)
+| Color | Hex | Usage |
+|-------|-----|-------|
+| Delphine Red | `#E10600` | Primary accent, CTAs |
+| Little Boy Blue | `#6BA4D4` | Product accent |
+| Summer Sun | `#FFD700` | Product accent |
+| Cream | `#F5F5F0` | Backgrounds |
+| Midnight | `#1A1A1A` | Text, dark elements |
 
-### Step 2: Setup Environment
+## Getting Started
 
-```bash
-# Copy the example env file
-cp .env.example .env
+### Prerequisites
 
-# Edit .env and add your database URL
-DATABASE_URL="postgresql://YOUR_CONNECTION_STRING_HERE"
-NEXTAUTH_SECRET="run-this-command-below-to-generate"
-NEXTAUTH_URL="http://localhost:3000"
-```
+- Node.js 18+ 
+- npm or yarn
+- PostgreSQL (for production)
 
-Generate secret:
-```bash
-openssl rand -base64 32
-```
-
-### Step 3: Install & Setup Database
+### Installation
 
 ```bash
+# Navigate to project directory
+cd delphine-swimwear
+
 # Install dependencies
 npm install
 
-# Push schema to database
-npm run db:push
-
-# Seed with sample data
-npm run db:seed
-```
-
-### Step 4: Run!
-
-```bash
+# Start development server
 npm run dev
 ```
 
-Visit: **http://localhost:3000**
+The site will be available at `http://localhost:3000`
 
----
+### Environment Variables
 
-## 🔐 Demo Accounts
+Create a `.env` file in the root directory:
 
-After seeding:
-- **Admin**: admin@delphine.com / admin123
-- **Customer**: test@example.com / test123
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/delphine"
 
----
+# Paysera Payment Gateway
+PAYSERA_PROJECT_ID="your_project_id"
+PAYSERA_SIGN_PASSWORD="your_sign_password"
+PAYSERA_TEST_MODE="true"
 
-## 📸 EASY IMAGE SYSTEM
-
-### Adding Your Own Images
-
-Images can be added in two ways:
-
-#### Option 1: Local Images (Recommended)
-
-Put your images in the `public/images/` folder:
-
-```
-public/
-  images/
-    hero/
-      slide-1.jpg    (1920x1080 or larger)
-      slide-2.jpg
-      slide-3.jpg
-    products/
-      product-slug-1.jpg   (800x1000)
-      product-slug-2.jpg
-    categories/
-      bikinis.jpg    (800x800)
-      one-pieces.jpg
-    collections/
-      summer-2024.jpg  (1200x800)
+# App
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
-Then reference them in the database as `/images/hero/slide-1.jpg`
-
-#### Option 2: External URLs
-
-Use any image URL (Unsplash, Cloudinary, etc.):
-- Just paste the full URL in the admin panel or database
-
-### Image Naming Convention
-
-For products:
-- `{product-slug}-1.jpg` - Primary image
-- `{product-slug}-2.jpg` - Secondary image
-- etc.
-
-Example: For a product with slug "riviera-bikini-set":
-- `riviera-bikini-set-1.jpg`
-- `riviera-bikini-set-2.jpg`
-
-### Recommended Image Sizes
-
-| Type | Size | Format |
-|------|------|--------|
-| Hero Slides | 1920x1080 | JPG |
-| Product Images | 800x1000 | JPG |
-| Category Images | 800x800 | JPG |
-| Collection Images | 1200x800 | JPG |
-
----
-
-## 🌐 Deploy to Netlify
-
-### Option A: GitHub + Netlify (Recommended)
-
-1. Push to GitHub:
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin https://github.com/YOUR_USERNAME/delphine-swimwear.git
-git push -u origin master
-```
-
-2. Go to [Netlify](https://netlify.com):
-   - "Add new site" → "Import from Git"
-   - Select your repo
-   - Add environment variables:
-     - `DATABASE_URL` = your Neon connection string
-     - `NEXTAUTH_SECRET` = your generated secret
-     - `NEXTAUTH_URL` = https://your-site.netlify.app
-   - Deploy!
-
-### Option B: Netlify CLI
-
-```bash
-npm install -g netlify-cli
-netlify login
-netlify init
-netlify env:set DATABASE_URL "your-connection-string"
-netlify env:set NEXTAUTH_SECRET "your-secret"
-netlify deploy --prod
-```
-
----
-
-## 🗄️ Database Commands
-
-```bash
-# View database in browser
-npm run db:studio
-
-# Reset and reseed database
-npm run db:push
-npm run db:seed
-
-# Generate Prisma client after schema changes
-npx prisma generate
-```
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-├── prisma/
-│   ├── schema.prisma    # Database schema
-│   └── seed.ts          # Sample data
-├── public/
-│   └── images/          # Your images go here!
+delphine-swimwear/
 ├── src/
-│   ├── app/
-│   │   ├── (auth)/      # Login, register pages
-│   │   ├── (shop)/      # Store pages
-│   │   ├── admin/       # Admin dashboard
-│   │   └── api/         # API routes
-│   ├── components/      # React components
-│   └── lib/             # Utilities, database, store
-├── .env.example         # Environment template
-├── netlify.toml         # Netlify config
+│   ├── app/                    # Next.js App Router pages
+│   │   ├── about/              # About/Our Story page
+│   │   ├── checkout/           # Checkout flow
+│   │   ├── collections/        # Collection pages
+│   │   ├── contact/            # Contact page
+│   │   ├── lookbook/           # Lookbook gallery
+│   │   ├── products/           # Product detail pages
+│   │   ├── shop/               # Shop page
+│   │   ├── size-guide/         # Size guide
+│   │   ├── globals.css         # Global styles
+│   │   ├── layout.tsx          # Root layout
+│   │   └── page.tsx            # Homepage
+│   ├── components/
+│   │   ├── cart/               # Cart drawer & provider
+│   │   ├── home/               # Homepage sections
+│   │   └── layout/             # Header & Footer
+│   └── lib/
+│       ├── store/              # Zustand cart store
+│       └── utils.ts            # Utility functions
+├── prisma/
+│   └── schema.prisma           # Database schema
+├── public/                     # Static assets
+├── tailwind.config.ts          # Tailwind configuration
 └── package.json
 ```
 
----
+## Pages
 
-## 🛠️ Admin Dashboard
+| Route | Description |
+|-------|-------------|
+| `/` | Homepage with hero, intro, products, values |
+| `/shop` | All products with filters |
+| `/collections` | Collection overview |
+| `/collections/[slug]` | Individual collection |
+| `/products/[slug]` | Product detail page |
+| `/about` | Brand story & philosophy |
+| `/lookbook` | Visual gallery |
+| `/contact` | Contact form |
+| `/size-guide` | Size chart & measurement guide |
+| `/checkout` | Multi-step checkout |
 
-Access at `/admin` (login with admin account)
+## Features
 
-Features:
-- **Dashboard**: Overview stats
-- **Products**: Add/edit/delete products
-- **Orders**: View and manage orders
-- **Customers**: View customer list
-- **Hero Slides**: Manage homepage slider
-- **Settings**: Store configuration
+### Implemented ✅
+- Responsive design (mobile-first)
+- Homepage with 6 sections
+- Product catalog with filtering
+- Product detail pages
+- Shopping cart with persistence
+- Multi-step checkout flow
+- Size guide
+- Contact form
+- Lookbook gallery
+- Brand story pages
 
----
+### To Be Configured 🔧
+- Database connection (Prisma)
+- Paysera payment integration
+- Admin dashboard
+- Customer authentication
+- Order management
+- Email notifications
+- Inventory tracking
 
-## 🎨 Customization
+## Development
 
-### Colors
+```bash
+# Run development server
+npm run dev
 
-Edit `tailwind.config.ts`:
-```ts
-colors: {
-  cream: { ... },
-  ocean: { ... },
-  coral: { ... },
-}
+# Build for production
+npm run build
+
+# Start production server
+npm start
+
+# Run linter
+npm run lint
 ```
 
-### Brand
+## Database Setup
 
-Update in:
-- `src/app/layout.tsx` - Site title/description
-- `src/components/layout/Header.tsx` - Logo
-- `src/components/layout/Footer.tsx` - Footer content
-- `prisma/seed.ts` - Default settings
+When ready to add database:
+
+```bash
+# Generate Prisma client
+npx prisma generate
+
+# Push schema to database
+npx prisma db push
+
+# Open Prisma Studio
+npx prisma studio
+```
+
+## Deployment
+
+The site is ready for deployment on:
+- Vercel (recommended)
+- Netlify
+- Any Node.js hosting
+
+## Brand Information
+
+**Delphine** is a swimwear brand inspired by the enchanting beauty of the Mediterranean Sea. The name draws from the dolphin - a symbol of freedom, playfulness, and connection to the sea.
+
+### Core Values
+- Grace
+- Class  
+- Elegance
+- Mediterranean Spirit
+- Freedom
+- Natural Beauty
+
+### Contact
+- Email: hello@delphineswimwear.com
+- Instagram: @delphine
+- Location: Tirana, Albania
 
 ---
 
-## 📞 Support
-
-Having issues? Check:
-1. Database connection string is correct
-2. `npm run db:push` completed successfully
-3. Environment variables are set in Netlify
-
----
-
-## 📄 License
-
-MIT License - Free for personal and commercial use.
-
----
-
-Built with ❤️ using Next.js 14, Prisma, PostgreSQL, and Tailwind CSS.
+Built with ❤️ for Delphine Swimwear
